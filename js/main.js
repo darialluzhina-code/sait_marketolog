@@ -62,3 +62,95 @@ document.querySelectorAll(".faq-item").forEach((item) => {
     });
   });
 });
+
+const initTrueFocus = (container) => {
+  if (!container) return;
+
+  const words = [...container.querySelectorAll(".focus-word")];
+  const corners = {
+    "top-left": container.querySelector(".focus-corner.top-left"),
+    "top-right": container.querySelector(".focus-corner.top-right"),
+    "bottom-left": container.querySelector(".focus-corner.bottom-left"),
+    "bottom-right": container.querySelector(".focus-corner.bottom-right"),
+  };
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const blurAmount = 5;
+  const cornerSize = 16;
+  const frameGap = 10;
+  const animationDuration = 0.5;
+  const pauseBetweenAnimations = 1;
+  let currentIndex = 0;
+
+  const measure = (index) => {
+    const word = words[index];
+    if (!word) return;
+    return {
+      x: word.offsetLeft,
+      y: word.offsetTop,
+      width: word.offsetWidth,
+      height: word.offsetHeight,
+    };
+  };
+
+  const apply = (index) => {
+    words.forEach((word, i) => {
+      const active = i === index;
+      word.classList.toggle("active", active);
+      if (!reduceMotion) {
+        word.style.filter = `blur(${active ? 0 : blurAmount}px)`;
+      }
+    });
+
+    const rect = measure(index);
+    if (!rect || reduceMotion) return;
+
+    const positions = {
+      "top-left": [rect.x - frameGap, rect.y - frameGap],
+      "top-right": [rect.x + rect.width + frameGap - cornerSize, rect.y - frameGap],
+      "bottom-left": [rect.x - frameGap, rect.y + rect.height + frameGap - cornerSize],
+      "bottom-right": [
+        rect.x + rect.width + frameGap - cornerSize,
+        rect.y + rect.height + frameGap - cornerSize,
+      ],
+    };
+
+    Object.entries(positions).forEach(([key, [x, y]]) => {
+      const el = corners[key];
+      if (!el) return;
+      el.style.opacity = "1";
+      el.style.transform = `translate(${x}px, ${y}px)`;
+    });
+  };
+
+  apply(0);
+
+  if (reduceMotion || words.length < 2) return;
+
+  let started = false;
+  const start = () => {
+    if (started) return;
+    started = true;
+    apply(0);
+    window.setInterval(() => {
+      currentIndex = (currentIndex + 1) % words.length;
+      apply(currentIndex);
+    }, (animationDuration + pauseBetweenAnimations) * 1000);
+  };
+
+  if (container.classList.contains("in")) {
+    start();
+  } else {
+    const wait = new MutationObserver(() => {
+      if (container.classList.contains("in")) {
+        wait.disconnect();
+        start();
+      }
+    });
+    wait.observe(container, { attributes: true, attributeFilter: ["class"] });
+    window.setTimeout(start, 2000);
+  }
+
+  window.addEventListener("resize", () => apply(currentIndex));
+};
+
+initTrueFocus(document.getElementById("heroTitle"));
