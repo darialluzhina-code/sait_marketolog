@@ -2,14 +2,14 @@
   --wine: #6e1f35;
   --wine-deep: #3d101c;
   --wine-soft: #8a3a4e;
-  --ivory: #f3ebe2;
-  --paper: #faf6f0;
-  --card: #fffaf4;
-  --ink: #1a1210;
-  --ink-soft: #4a3b36;
+  --ivory: #e4e0dc;
+  --paper: #eeece9;
+  --card: #f4f2f0;
+  --ink: #1b1917;
+  --ink-soft: #534e4a;
   --brass: #b8956a;
-  --blush: #e8d4c6;
-  --line: rgba(26, 18, 16, 0.12);
+  --blush: #d2cdc8;
+  --line: rgba(27, 25, 23, 0.12);
   --radius: 1.4rem;
   --header: 4.5rem;
 }
@@ -86,7 +86,7 @@ p {
   justify-content: space-between;
   height: var(--header);
   padding: 0 6vw;
-  background: rgba(243, 235, 226, 0.72);
+  background: rgba(228, 224, 220, 0.78);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid transparent;
   transition: border-color 0.3s ease, background 0.3s ease;
@@ -94,7 +94,7 @@ p {
 
 .header.scrolled {
   border-bottom-color: var(--line);
-  background: rgba(250, 246, 240, 0.92);
+  background: rgba(238, 236, 233, 0.94);
 }
 
 .logo {
